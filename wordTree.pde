@@ -18,33 +18,39 @@ int [] greenArray={#006600, #00b300, #00ff00};
 int [] blueArray={#002966, #0047b3, #0066ff};
 int saveCounter=0;
 String saveName;
+int fileSelected=0;
+String fileName;
+int minSize=2;
 
 void setup() {
-  fullScreen();
+  //PImage icon = loadImage("treeIcon.png");
+  //  surface.setIcon(icon);
+  //surface.setTitle("Word Tree");
+  //fullScreen();
+  size(displayWidth, displayHeight);
   background(0);
   cp5=new ControlP5(this);
   f = createFont("helvetica neue", 16, true);
   textFont(f, 20);
-  String[] lines = loadStrings("/Users/quinscacheri/Documents/Processing/testText.txt");
-  String toTree=breakArray(lines);
-  toTree=toTree.replaceAll(",", "");
-  toTree=toTree.replaceAll("\"", "");
-  treeArray=toTree.split(" ");
-  counter=-1;
-  branchNum=(int)(log(treeArray.length)/log(2));
-  drawTree3(720, 875, 26, 90);
-  //save("treeP.tif");
-  drawSlider();
-  print(treeArray.length);
+  selectScreen();
 }
 
 void draw() {
-
-  updateSliders();
+  if (fileSelected==1) {
+    stringSetup();
+    cp5.getController("open").setColorBackground(0);
+    cp5.getController("open").setColorLabel(0);
+    cp5.getController("open").setColorValue(0); 
+    cp5.getController("open").setColorActive(0); 
+    cp5.getController("open").setColorForeground(0); 
+    fileSelected++;
+  } else if (fileSelected==2) {
+    cp5.getController("open").hide();
+    updateSliders();
+  }
 }
 
 void mouseClicked() {
-  println(mouseX, mouseY);
 }
 
 String breakArray(String []a) {
@@ -71,7 +77,9 @@ void textAtAngle(String s, float x, float y, float l, float a) {
 
 void drawTree3(float x, float y, int l, int a) {
 
-  if (l>2) {
+  if (l>minSize) {
+    wordCounter++;
+    //println(wordCounter);
     counter++;
     strokeWeight(2);
     if (isWhite==false)
@@ -194,7 +202,7 @@ void drawSlider() {
 void newTree() {
   background(0);
   counter=-1;
-  drawTree3(720, 875, 24, 90);
+  drawTree3(displayWidth/2, displayHeight-24, 24, 90);
 }
 
 void updateSliders() {
@@ -283,4 +291,56 @@ void fakeShow() {
   cp5.getController("button").setColorActive((#bfbfbf));
   cp5.getController("button").setColorForeground(#ffffff);
   cp5.getController("button").setColorLabel(0);
+}
+
+
+
+void fileSelected(File selection) {
+  if (selection == null) {
+    println("Window was closed or the user hit cancel.");
+  } else {
+    fileName=selection.getAbsolutePath();
+    fileSelected=1;
+  }
+}
+
+
+void selectScreen() {
+  //textAlign(LEFT);
+  text("•Press H to hide menu", displayWidth/2-100, (displayHeight/12)*8);
+  text("•Press S to to save", displayWidth/2-100, (displayHeight/12)*9);
+  text("•Press R to generate a new tree", displayWidth/2-100, (displayHeight/12)*10);
+  cp5.addButton("open").
+    setPosition(displayWidth/2-200, displayHeight/2)
+    .setSize(400, 40)
+    .setLabel("open")
+    .setColorLabel(#000000)
+    .setColorBackground(#660000)  
+    .setColorForeground(#A8F7F8)
+    .setColorActive(#A8F7F8)
+    .setMax(255)
+    ;
+  cp5.getController("open").setColorBackground(#ffffff);
+}
+
+void open(int theValue) {
+  selectInput("Select a file to process:", "fileSelected");
+}
+
+void stringSetup() {
+  background(0);
+  String[] lines = loadStrings(fileName);
+  String toTree=breakArray(lines);
+  toTree=toTree.replaceAll(",", "");
+  toTree=toTree.replaceAll("\"", "");
+  treeArray=toTree.split(" ");
+  counter=-1;
+  branchNum=(int)(log(treeArray.length)/log(2));
+  println("length is"+treeArray.length);
+  minSize=(int)(log(treeArray.length)/log(2));
+  minSize=minSize/2;
+  println("min size = "+minSize);
+  drawTree3(720, 875, 26, 90);
+  //save("treeP.tif");
+  drawSlider();
 }
