@@ -338,8 +338,7 @@ void stringSetup() {
   branchNum=(int)(log(treeArray.length)/log(2));
   println("length is "+treeArray.length);
   minSize=(int)(log(treeArray.length)/log(2));
-  minSize=24-minSize;
-  minSize=minSize/4;
+  minSize=abs(24-(minSize*2));
   if (minSize<1) minSize=1;
   println("min size = "+minSize);
   drawTree3(720, 875, 24, 90);
