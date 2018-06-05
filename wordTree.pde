@@ -336,11 +336,13 @@ void stringSetup() {
   treeArray=toTree.split(" ");
   counter=-1;
   branchNum=(int)(log(treeArray.length)/log(2));
-  println("length is"+treeArray.length);
+  println("length is "+treeArray.length);
   minSize=(int)(log(treeArray.length)/log(2));
-  minSize=minSize/2;
+  minSize=24-minSize;
+  minSize=minSize/4;
+  if (minSize<1) minSize=1;
   println("min size = "+minSize);
-  drawTree3(720, 875, 26, 90);
+  drawTree3(720, 875, 24, 90);
   //save("treeP.tif");
   drawSlider();
 }
